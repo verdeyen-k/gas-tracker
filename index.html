@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gas Tracker">
+  <title>Gas Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Gas Tracker</h1>
+    </header>
+
+    <main id="screen-home">
+      <button id="btn-new-fillup" class="btn-primary">+ New Fill-up</button>
+      <button id="btn-history" class="btn-secondary">View History</button>
+    </main>
+
+    <main id="screen-fillup" class="hidden">
+      <h2>New Fill-up</h2>
+
+      <section class="capture-section">
+        <label>Odometer</label>
+        <div class="capture-row">
+          <input type="number" id="input-mileage" placeholder="Miles" inputmode="numeric">
+          <button class="btn-camera" data-target="mileage">📷</button>
+        </div>
+        <div id="preview-mileage" class="preview hidden"></div>
+      </section>
+
+      <section class="capture-section">
+        <label>Gallons</label>
+        <div class="capture-row">
+          <input type="number" id="input-gallons" placeholder="Gallons" step="0.001" inputmode="decimal">
+          <button class="btn-camera" data-target="gallons">📷</button>
+        </div>
+        <div id="preview-gallons" class="preview hidden"></div>
+      </section>
+
+      <section class="capture-section">
+        <label>Price per Gallon</label>
+        <div class="capture-row">
+          <input type="number" id="input-price" placeholder="$/gal" step="0.001" inputmode="decimal">
+          <button class="btn-camera" data-target="price">📷</button>
+        </div>
+        <div id="preview-price" class="preview hidden"></div>
+      </section>
+
+      <div class="actions">
+        <button id="btn-save" class="btn-primary">Save</button>
+        <button id="btn-cancel" class="btn-secondary">Cancel</button>
+      </div>
+    </main>
+  </div>
+
+  <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden">
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
