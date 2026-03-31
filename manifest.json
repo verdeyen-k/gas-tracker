@@ -1,7 +1,7 @@
 {
   "name": "Gas Tracker",
   "short_name": "Gas Tracker",
-  "start_url": "/",
+  "start_url": "/gas-tracker/",
   "display": "standalone",
   "background_color": "#f5f5f5",
   "theme_color": "#007aff",
