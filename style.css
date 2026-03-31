@@ -156,3 +156,9 @@ input[type="number"]:focus {
   gap: 12px;
   margin-top: 32px;
 }
+
+.auth-status {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}
