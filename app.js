@@ -1,5 +1,3 @@
-let accessToken = null;
-
 const screens = {
   home: document.getElementById('screen-home'),
   fillup: document.getElementById('screen-fillup'),
@@ -7,53 +5,6 @@ const screens = {
 
 const cameraInput = document.getElementById('camera-input');
 let activeCameraTarget = null;
-
-// ── Auth ──────────────────────────────────────────────────────────────────────
-
-function initAuth() {
-  const stored = sessionStorage.getItem('gas_tracker_token');
-  if (stored) {
-    accessToken = stored;
-    onSignedIn();
-  }
-}
-
-function onSignedIn() {
-  document.getElementById('btn-signin').classList.add('hidden');
-  document.getElementById('btn-signout').classList.remove('hidden');
-  document.getElementById('btn-new-fillup').classList.remove('hidden');
-  document.getElementById('auth-status').textContent = 'Signed in';
-}
-
-function onSignedOut() {
-  accessToken = null;
-  sessionStorage.removeItem('gas_tracker_token');
-  document.getElementById('btn-signin').classList.remove('hidden');
-  document.getElementById('btn-signout').classList.add('hidden');
-  document.getElementById('btn-new-fillup').classList.add('hidden');
-  document.getElementById('auth-status').textContent = '';
-}
-
-document.getElementById('btn-signin').addEventListener('click', () => {
-  const client = google.accounts.oauth2.initTokenClient({
-    client_id: CONFIG.CLIENT_ID,
-    scope: CONFIG.SCOPES,
-    callback: (response) => {
-      if (response.error) {
-        alert('Sign-in failed: ' + response.error);
-        return;
-      }
-      accessToken = response.access_token;
-      sessionStorage.setItem('gas_tracker_token', accessToken);
-      onSignedIn();
-    },
-  });
-  client.requestAccessToken();
-});
-
-document.getElementById('btn-signout').addEventListener('click', () => {
-  google.accounts.oauth2.revoke(accessToken, () => onSignedOut());
-});
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 
@@ -128,31 +79,33 @@ document.getElementById('btn-save').addEventListener('click', async () => {
   const now = new Date();
   const timestamp = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.toTimeString().slice(0, 8)}`;
 
-  const row = [timestamp, parseFloat(mileage), parseFloat(price), parseFloat(gallons)];
+  const saveBtn = document.getElementById('btn-save');
+  saveBtn.textContent = 'Saving...';
+  saveBtn.disabled = true;
 
   try {
-    const response = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(CONFIG.SHEET_NAME)}:append?valueInputOption=USER_ENTERED`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ values: [row] }),
-      }
-    );
+    const response = await fetch(CONFIG.SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        secret: CONFIG.SECRET,
+        timestamp,
+        mileage: parseFloat(mileage),
+        price: parseFloat(price),
+        gallons: parseFloat(gallons),
+      }),
+    });
 
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error?.message || 'Sheets API error');
-    }
+    const result = await response.json();
+    if (result.error) throw new Error(result.error);
 
     alert(`Saved!\n${timestamp}\n${mileage} mi — ${gallons} gal @ $${price}/gal`);
     clearForm();
     showScreen('home');
   } catch (err) {
     alert('Failed to save: ' + err.message);
+  } finally {
+    saveBtn.textContent = 'Save';
+    saveBtn.disabled = false;
   }
 });
 
@@ -170,4 +123,3 @@ function clearForm() {
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 showScreen('home');
-initAuth();

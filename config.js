@@ -1,6 +1,4 @@
 const CONFIG = {
-  CLIENT_ID: '382697068562-u1idea6uthpa9ljb5qr1pha7nji9ism4.apps.googleusercontent.com',
-  SPREADSHEET_ID: '1ghDiFFda0vjctNz0H_tfFhuAI18SJU4igvsN_pcD3xY',
-  SHEET_NAME: 'F150 Gas',
-  SCOPES: 'https://www.googleapis.com/auth/spreadsheets',
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbze6m2qBgYOkugwM0h69I-4ejliJ0Y5BSK2UfjQlmkq8DlaSXFLjmFZ6XUiqvclw_4l/exec',
+  SECRET: 'gas me up daddy',
 };
